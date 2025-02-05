@@ -8,6 +8,9 @@ import  Header  from './componentes/header';
 
 let randomNumber = Math.floor(Math.random() * 100);
 
+const publicKey = 'cc1ea1c40eb534f495ed2cd238a9b858'; // Usa tu clave pública
+const privateKey = '96fdcd63888c1aebc7920bdd3f688c46e7f25473';
+
 function App() {
 
   const navigate = useNavigate();
@@ -34,7 +37,10 @@ useEffect(() => {
   if (cachedComics) {
     setArrayMarvelComic(JSON.parse(cachedComics));
   } else {
-    fetch(`https://gateway.marvel.com:443/v1/public/comics?issueNumber=${randomNumber}&limit=12&apikey=cc1ea1c40eb534f495ed2cd238a9b858`)
+    const timestamp = Date.now();
+    const hash = md5(timestamp + privateKey + publicKey)
+
+    fetch(`https://gateway.marvel.com:443/v1/public/comics?issueNumber=${randomNumber}&limit=12&apikey=${publicKey}&ts=${timestamp}&hash=${hash}`)
       .then(res => res.json())
       .then(data => {
         const comics = data.data.results;
