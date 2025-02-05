@@ -117,7 +117,9 @@ useEffect(() => {
               )
             ))}
           </section>
-          <section className='section-menu'></section>
+          <section className='section-menu'>
+            <img className='img-punisher' src="/assets/punisherWall.jpeg" alt="" />
+          </section>
         </main>
 
         {/* <div className="container-character-find"></div>
