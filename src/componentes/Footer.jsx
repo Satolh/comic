@@ -9,7 +9,7 @@ const Footer = () => {
         <div className='container-made'>
             <p className='made'>  Made by Satolh </p>
             
-            <img src={"/public/assets/punisher.png"} alt="Logo The Punisher" className='logo-footer'/>
+            <img src={"/assets/punisher.png"} alt="Logo The Punisher" className='logo-footer'/>
         </div>
 
         <div className='container-redes'>
