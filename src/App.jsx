@@ -11,6 +11,8 @@ let randomNumber = Math.floor(Math.random() * 100) || 0;
 
 const publicKey = 'cc1ea1c40eb534f495ed2cd238a9b858'; // Usa tu clave pública
 const privateKey = '96fdcd63888c1aebc7920bdd3f688c46e7f25473';
+const ts = Date.now();
+const hash = md5(ts + privateKey + publicKey);
  
 
 function App() {
@@ -40,7 +42,8 @@ useEffect(() => {
     setArrayMarvelComic(JSON.parse(cachedComics));
   } else {
 
-    const marvelUrl = `https://gateway.marvel.com/v1/public/comics?issueNumber=${randomNumber}&limit=12&apikey=${publicKey}`
+    // const marvelUrl = `https://gateway.marvel.com/v1/public/comics?issueNumber=${randomNumber}&limit=12&apikey=${publicKey}`
+    const marvelUrl = `https://gateway.marvel.com/v1/public/comics?issueNumber=${randomNumber}&limit=12&ts=${ts}&apikey=${publicKey}&hash=${hash}`
 
     fetch(marvelUrl)
       .then(res => res.json())
@@ -50,7 +53,8 @@ useEffect(() => {
           setArrayMarvelComic(comics);
           localStorage.setItem('marvelComics', JSON.stringify(comics)); // Guardar en caché
         }
-      });
+      })
+      .catch((error) => console.error("Error fetching comics:", error))
     }
   }, []);
   
