@@ -25,7 +25,6 @@ body{
     height: 88vh;
     width: 58%;
     position: relative;
-    z-index: -1;
 }
 /* .section-menu::before{
     content: "";
@@ -52,6 +51,8 @@ body{
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: repeat(3,280px);
     margin: 0 auto;
+    position: relative;
+    z-index: 20;
 }
 .img-comic{
     height: 100%;

@@ -69,7 +69,6 @@ useEffect(() => {
     comic.characters.items.forEach((item) => {
       const lola = item.name;
       characters.push(lola);
-      console.log(lola) 
     });
     
     // Arrays temporales para acumular los creadores
@@ -108,7 +107,6 @@ useEffect(() => {
     });
   };
   
-  console.log(arrayMarvelComic)
   
   
   return (
