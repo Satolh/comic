@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import md5 from 'md5';
 import { BrowserRouter as Router, Route, Routes, Link, useNavigate } from 'react-router-dom';
 import Marvel from './Marvel';
 import Footer from "./componentes/Footer"
@@ -6,10 +7,11 @@ import PageCharacterProfile from './routes/PageCharacterProfile';
 // import FunctionComicSelected from './componentes/functionComicSelected';
 import  Header  from './componentes/header';
 
-let randomNumber = Math.floor(Math.random() * 100);
+let randomNumber = Math.floor(Math.random() * 100) || 0;
 
 const publicKey = 'cc1ea1c40eb534f495ed2cd238a9b858'; // Usa tu clave pública
 const privateKey = '96fdcd63888c1aebc7920bdd3f688c46e7f25473';
+ 
 
 function App() {
 
@@ -37,10 +39,10 @@ useEffect(() => {
   if (cachedComics) {
     setArrayMarvelComic(JSON.parse(cachedComics));
   } else {
-    const timestamp = Date.now();
-    const hash = md5(timestamp + privateKey + publicKey)
 
-    fetch(`https://gateway.marvel.com:443/v1/public/comics?issueNumber=${randomNumber}&limit=12&apikey=${publicKey}&ts=${timestamp}&hash=${hash}`)
+    const marvelUrl = `https://gateway.marvel.com/v1/public/comics?issueNumber=${randomNumber}&limit=12&apikey=${publicKey}`
+
+    fetch(marvelUrl)
       .then(res => res.json())
       .then(data => {
         const comics = data.data.results;
@@ -51,28 +53,28 @@ useEffect(() => {
       });
     }
   }, []);
-
-
+  
+  
   const handleSelectComic = (comic) => {
     const fechaAPI = comic.dates[1].date;
     const fecha = new Date(fechaAPI);
     const opcionesDeFecha = { year: 'numeric', month: 'long', day: 'numeric' };
     const formatDate = fecha.toLocaleDateString('en-EN', opcionesDeFecha);
-
+    
     let  characters = []; // Array temporal para almacenar los nombres
     comic.characters.items.forEach((item) => {
-        const lola = item.name;
-        characters.push(lola);
-        console.log(lola) 
+      const lola = item.name;
+      characters.push(lola);
+      console.log(lola) 
     });
-  
+    
     // Arrays temporales para acumular los creadores
     
     let tempWriters = [];
     let tempPencilers = [];
     let tempEditors = [];
     let tempColorists = [];
-  
+    
     // Recorremos los creadores y los agrupamos según su rol
     comic.creators.items.forEach((item) => {
       if (item.role === "writer") {
@@ -88,8 +90,7 @@ useEffect(() => {
         tempColorists.push(item.name);
       }
     });
-    console.log(comic)
-
+    
     navigate("/PageComicInfo", {
       state: {
         comic,
@@ -103,8 +104,9 @@ useEffect(() => {
     });
   };
   
-
-
+  console.log(arrayMarvelComic)
+  
+  
   return (
     <>
       <div className='container'>
@@ -115,7 +117,7 @@ useEffect(() => {
             {arrayMarvelComic.map((comic, index) => (
               comic?.images[0]?.path && (
                 <div
-                  key={index}
+                key={index}
                   onClick={() => handleSelectComic(comic)}
                 >
                   <Marvel img={comic.images} nameComic={comic.title} />
