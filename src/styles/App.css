@@ -675,11 +675,11 @@ body{
     }
     /* -------------comics related---------------------- */
     .img-comic-related{
-        width: 100px;
+        width: 90px;
         height: 150px;;
     }
     .container-comic-related{
-        margin: 0 auto;
+        width: 100%;
     }
 
 }
