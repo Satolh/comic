@@ -673,6 +673,15 @@ body{
         width: 100%;
         font-size: 0.8rem;
     }
+    /* -------------comics related---------------------- */
+    .img-comic-related{
+        width: 100px;
+        height: 150px;;
+    }
+    .container-comic-related{
+        margin: 0 auto;
+    }
+
 }
 
 
