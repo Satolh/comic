@@ -28,6 +28,7 @@ function App() {
   const [closeMain, setCloseMain] = useState(true);
   const [closeCharacterSelected, setCloseCharacterSelected] = useState(false);
   const [changeClassSectionComicInfo, setChangeSectionClassComicInfo] = useState(false);
+  const [loading, setLoading] = useState(false)
 
 
   const classContainerCharacter = openCharacters ? "container-character-find" : "container-character-find display-block";
@@ -37,25 +38,29 @@ function App() {
   const classSectionComicInfo = changeClassSectionComicInfo ? "section-comic-info" : "section-comic-info display-none";
 
 useEffect(() => {
+  setLoading(true)
+
   const cachedComics = localStorage.getItem('marvelComics');
   if (cachedComics) {
     setArrayMarvelComic(JSON.parse(cachedComics));
+    setLoading(false)
   } else {
-
     // const marvelUrl = `https://gateway.marvel.com/v1/public/comics?issueNumber=${randomNumber}&limit=12&apikey=${publicKey}`
     const marvelUrl = `https://gateway.marvel.com/v1/public/comics?issueNumber=${randomNumber}&limit=12&ts=${ts}&apikey=${publicKey}&hash=${hash}`
-
+    
     fetch(marvelUrl)
-      .then(res => res.json())
-      .then(data => {
-        const comics = data.data.results;
-        if (comics) {
-          setArrayMarvelComic(comics);
-          localStorage.setItem('marvelComics', JSON.stringify(comics)); // Guardar en caché
+    .then(res => res.json())
+    .then(data => {
+      const comics = data.data.results;
+      if (comics) {
+        setArrayMarvelComic(comics);
+        localStorage.setItem('marvelComics', JSON.stringify(comics)); // Guardar en caché
+        setLoading(false)
         }
       })
       .catch((error) => console.error("Error fetching comics:", error))
     }
+    console.log(loading)
   }, []);
   
   
@@ -127,6 +132,7 @@ useEffect(() => {
               )
             ))}
           </section>
+          {loading && <div className="spinner"></div>}
           <section className='section-menu'>
             <img className='img-punisher' src="/assets/punisherWall.jpeg" alt="" />
           </section>

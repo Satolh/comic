@@ -3,35 +3,22 @@ import  Header from "../componentes/header";
 import Footer from "../componentes/Footer"
 import {useNavigate, useLocation } from 'react-router-dom';
 import ComicRelatedApp from "../ComicRelated";
+import md5 from "md5";
 // import { FunctionComicSelected } from "../componentes/functionComicSelected";
 import { Link } from "react-router-dom";
 export default function PageCharacterProfile() {
 
   const navigate = useNavigate();
 
+const publicKey = 'cc1ea1c40eb534f495ed2cd238a9b858'; // Usa tu clave pública
+const privateKey = '96fdcd63888c1aebc7920bdd3f688c46e7f25473';
+const ts = Date.now();
+const hash = md5(ts + privateKey + publicKey);
+ 
+
     const [characterSelected, setCharacterSelected] = useState(null);
     const [takeImage, setTakeImage] = useState([]);
-    const [comicRelated, setComicRelated] = useState([]);
-
-    const [writers, setWriters] = useState([]);
-    const [pencilers,setPencilers] =useState([]);
-    const [date,setDate] = useState([]);
-    const [colorist,setColorists] = useState([]);
-    const [editors,setEditors] = useState([]);
-    const [comicSelected, setComicSelected] = useState(null);
-    const [ComicSelectedCharacters, setComicSelectedCharacters] = useState(null)
-
-    // useEffect(() => {
-    //     const dataCharacter = JSON.parse(localStorage.getItem('characterSelected'));
-    //     const dataComicRelated = JSON.parse(localStorage.getItem('comicRelated'));
-    
-    //     setCharacterSelected(dataCharacter);
-    //     setComicRelated(dataComicRelated)
-    
-    //     console.log(characterSelected)
-    //     console.log(comicRelated)
-    //   }, []);
-
+    const [loading, setLoading] = useState()
       const location = useLocation();
       const charSelected = location.state?.newArrayComicRelated;
       const charInfo = location.state?.characterInfo
@@ -40,16 +27,18 @@ export default function PageCharacterProfile() {
 
 
    useEffect(() => {
+    setLoading(true)
     if (charSelected[0]) {
 
       charSelected.forEach((item)=>{
         if(item.length >= 3 && (item[1] && item[2])){
 
         }
+        setLoading(false)
       })
       const promises = charSelected.map(([title, year, issueNumber]) => {
         if(!isNaN(year) && !isNaN(issueNumber)){
-          const apiUrl = `https://gateway.marvel.com:443/v1/public/comics?title=${title}&startYear=${year}&issueNumber=${issueNumber}&limit=6&apikey=cc1ea1c40eb534f495ed2cd238a9b858`;  
+          const apiUrl = `https://gateway.marvel.com/v1/public/comics?title=${title}&startYear=${year}&issueNumber=${issueNumber}&limit=6&ts=${ts}&apikey=${publicKey}&hash=${hash}`;  
           return fetch(apiUrl)
           .then((res) => res.json())
           .then((data) => {
@@ -172,8 +161,8 @@ export default function PageCharacterProfile() {
                     : ""
                   ))
                   }
-                
             </div>
+            {loading && <div className="spinner"></div>}
             {
                 takeImage.length === 0 &&
                 <div className="container-comic-related-not-found">

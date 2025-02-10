@@ -3,8 +3,15 @@ import  Header  from "../componentes/header";
 import Footer from "../componentes/Footer"
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import md5 from "md5";
 
 export default function PageCharacter() {
+
+    const publicKey = 'cc1ea1c40eb534f495ed2cd238a9b858'; // Usa tu clave pública
+    const privateKey = '96fdcd63888c1aebc7920bdd3f688c46e7f25473';
+    const ts = Date.now();
+    const hash = md5(ts + privateKey + publicKey);
+    
     
     const navigate = useNavigate();
 
@@ -12,12 +19,13 @@ export default function PageCharacter() {
     const [arrayCharacter, setArrayCharacter] = useState([]);
     const [characterSelected, setCharacterSelected] = useState(null);
     const [comicRelated, setComicRelated] = useState([]);
+    // const [loading, setLoading] = useState(false)
     useEffect(() => {
         if (inputValue.trim() === '') {
             return;
         }
             if (inputValue.length >= 3) { // Solo busca si tiene 3 o más caracteres
-                fetch(`https://gateway.marvel.com:443/v1/public/characters?nameStartsWith=${inputValue}&apikey=cc1ea1c40eb534f495ed2cd238a9b858`)
+                fetch(`https://gateway.marvel.com/v1/public/characters?nameStartsWith=${inputValue}&ts=${ts}&apikey=${publicKey}&hash=${hash}`)
                 .then(res => res.json())
                 .then(data => {
                     if (data.data && data.data.results) {
@@ -25,7 +33,6 @@ export default function PageCharacter() {
                         console.log(arrayData)
                         const filterData = arrayData.filter((result) => !result.thumbnail.path.includes("available") )
                         setArrayCharacter(filterData);
-                        
                     }
                 })
                 .catch(error => {
@@ -72,6 +79,7 @@ export default function PageCharacter() {
                             </div>
                     </div>
                     ))}
+                    {/* {loading && <div className="spinner"></div>} */}
                 </div>
             </section>
         <Footer/>

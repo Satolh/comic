@@ -2,10 +2,16 @@ import { useState, useEffect } from "react";
 import App from "../App";
 import  Header  from "../componentes/header";
 import Footer from "../componentes/Footer"
+import md5 from "md5";
 import { useLocation, useNavigate } from "react-router-dom";
 
 
 const PageComicInfo = () => {
+
+const publicKey = 'cc1ea1c40eb534f495ed2cd238a9b858'; // Usa tu clave pública
+const privateKey = '96fdcd63888c1aebc7920bdd3f688c46e7f25473';
+const ts = Date.now();
+const hash = md5(ts + privateKey + publicKey);
 
     const navigate = useNavigate()
     const [takeImageComic,setTakeImageComic] = useState([])
@@ -23,7 +29,7 @@ const PageComicInfo = () => {
   useEffect(() => {
     if (character && character.length > 0) {
       const promises = character.map((character) => {
-        const apiUrlCharacters = `https://gateway.marvel.com:443/v1/public/characters?name=${character}&apikey=cc1ea1c40eb534f495ed2cd238a9b858`;
+        const apiUrlCharacters = `https://gateway.marvel.com/v1/public/characters?name=${character}&ts=${ts}&apikey=${publicKey}&hash=${hash}`;
         return fetch(apiUrlCharacters)
           .then((res) => res.json())
           .then((data) => {
